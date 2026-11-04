@@ -25,7 +25,20 @@ Különböző fizikai mérési elvek és szenzortípusok (MEMS nyomás- és gyor
 
 ---
 
-## 🔌 Hardver Összeállítás: 3 I2C Szenzor a Próbapanelen (Breadboard)
+## 🔌 Hardver Összeállítás
+
+### 1. Kristálytiszta Elektronika Fejlesztői Panel (STM32F405VGT6)
+A tananyaghoz készült hivatalos oktatópanelen a három I2C szenzor és az OLED kijelző közvetlenül a nyomtatott áramköri lapra van integrálva, külön huzalozást nem igényelnek:
+* **I2C busz:** `I2C1` (`PB6` = SCL, `PB7` = SDA)
+* **APDS9300 (fénymérő):** `I2C1`, cím: `0x39` (`LightSensor_ADDR_FLOAT`), INT: `PB8`
+* **LM75A (hőmérő):** `I2C1`, cím: `0x48`, OS riasztási kimenet a panel túlhőmérséklet-jelző LED-jére kötve
+* **HIH8120 (páratartalom- és hőmérséklet-mérő):** `I2C1`, cím: `0x27` (fejlécben `0x4E`)
+* **OLED kijelző (SSD1306):** `I2C1`, cím: `0x3C` (`0x78`)
+* **Példaprogram csomag:** `lecture_13_Panel_F405.zip` — kicsomagolva öt projekt: `13_fejezet_temperature_sensor/`, `13_fejezet_humidity_sensor_magyar/`, `13_fejezet_light_sensor/`, `13_fejezet_all_i2c_sensors_magyar/`, valamint a panelre igazított, kijelzős fénymérő példa: `lecture_8_Panel_F405/`
+
+---
+
+### 2. STM32 Nucleo-F446ZE Próbapaneles (Breadboard) Kiépítés
 
 A panelen található APDS9300 fénymérő, LM75A hőmérő és HIH8120 páratartalom-mérő modul egyetlen, közös **I2C2** buszra van kötve: mindhárom modul SDA, illetve SCL lába ugyanabba a próbapanel-oszlopba csatlakozik, ahonnan egy-egy jumper vezet az STM32 megfelelő lábára. A modulok VCC/GND lába a próbapanel piros (+3.3V) és kék (GND) tápsínjére kerül.
 

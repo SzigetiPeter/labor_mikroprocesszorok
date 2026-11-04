@@ -14,9 +14,9 @@ A kalibráció definíciójának, a mérési hibák (offset, meredekség) és a 
   - Szisztematikus és véletlen hibák: zérushiba (offset), meredekséghiba (gain), nemlinearitás.
   - Hőmérséklet-érzékelők: NTC vs. PTC termisztorok, nemlineáris karakterisztika, a Steinhart-Hart egyenlet és együtthatóinak (A, B, C) meghatározása három ellenállás-hőmérséklet értékpárból.
 - [ ] **Mérési elrendezés és ellenállás-számítás:**
-  - Vishay NTCLE400E3103H NTC termisztor ($R_{25} = 10	ext{ k}\Omega$, B=3977 K) és $R_2 = 10	ext{ k}\Omega$ referencia-ellenállás feszültségosztójának vizsgálata.
-  - Feszültségosztó kimenetének beolvasása az STM32 ADC1 (`PA3`, `ADC1_IN3`, `SEN` címke) perifériájával 12 bites felbontásban.
-  - Az NTC pillanatnyi ellenállásának kiszámítása: $R_1 = (rac{4095}{ADC} - 1) \cdot 10000	ext{ }\Omega$.
+  - Vishay NTCLE400E3103H NTC termisztor ($R_{25} = 10\text{ k}\Omega$, B=3977 K) és $R_2 = 10\text{ k}\Omega$ referencia-ellenállás feszültségosztójának vizsgálata.
+  - Feszültségosztó kimenetének beolvasása az STM32 ADC1 perifériájával (`SEN` címke; Panel: `PA1`, `ADC1_IN1`; Nucleo: `PA3`, `ADC1_IN3`) 12 bites felbontásban.
+  - Az NTC pillanatnyi ellenállásának kiszámítása: $R_1 = (\frac{4095}{ADC} - 1) \cdot 10000\text{ }\Omega$.
 - [ ] **Zéruspontos (egypontos) kalibrációs állapotgép megvalósítása:**
   - Szoftveres állapotgép működtetése nyomógombokkal és OLED kijelzővel:
     1. `SCRN_Start` és `SCRN_ADC` képernyők közötti váltás a fel (BTN1) / le (BTN5) gombbal.
@@ -28,7 +28,21 @@ A kalibráció definíciójának, a mérési hibák (offset, meredekség) és a 
 
 ---
 
-## 🔌 Hardver Összeállítás: NTC Feszültségosztó a Próbapanelen (Breadboard)
+## 🔌 Hardver Összeállítás
+
+### 1. Kristálytiszta Elektronika Fejlesztői Panel (STM32F405VGT6)
+A tananyaghoz készült hivatalos oktatópanelen az analóg termisztor-bemenet, az 5 navigációs nyomógomb és az OLED kijelző közvetlenül a nyomtatott áramköri lapra van integrálva:
+* **Analóg mérőbemenet:** `PA1` (`ADC1_IN1`, `SEN` címke a sorkapocsnál)
+* **Referencia-ellenállás:** $10\,\text{k}\Omega$ a mérőpont és a GND között a panelen
+* **OLED kijelző (SSD1306):** `I2C1` (`PB6` = SCL, `PB7` = SDA)
+* **Képernyőváltás (fel / le):** `PD8` (`BTN1_Pin`) / `PB12` (`BTN5_Pin`)
+* **Megjelenítési mód (bal / jobb):** `PB15` (`BTN2_Pin`) / `PB13` (`BTN4_Pin`)
+* **Kalibráció indítása / törlése (középső):** `PB14` (`BTN3_Pin`)
+* **Példaprogram csomag:** `lecture_14_Panel_F405.zip` (kicsomagolva: `14_fejezet_kalibralas_peldakod/`)
+
+---
+
+### 2. STM32 Nucleo-F446ZE Próbapaneles (Breadboard) Kiépítés
 
 A termisztor és a $10\,\text{k}\Omega$-os precíziós referencia-ellenállás sorba kötve feszültségosztót alkot a `3.3V` és `GND` sín között; a két alkatrész közös pontja (az osztó kimenete) adja az STM32 analóg bemenetére kötött mérőfeszültséget. Az OLED kijelző a közös **I2C2** buszra, a kalibrációs állapotgépet vezérlő 5 nyomógomb pedig a HMI panel gombjaira csatlakozik.
 
@@ -53,7 +67,7 @@ A termisztor és a $10\,\text{k}\Omega$-os precíziós referencia-ellenállás s
 ## 🚀 Teendők a Laboron (Lépésről lépésre)
 1. Tanulmányozd át a mellékelt tananyag PDF-et (`14. Szenzorok kalibrálása.pdf`)!
 2. Indítsd el az **STM32CubeIDE**-t, és nyisd meg a fejezethez tartozó kalibrációs projektet!
-3. Vizsgáld meg a feszültségosztó bekötését (NTC és $10	ext{ k}\Omega$-os ellenállás a `PA3` (`SEN`) analóg lábra kötve)!
+3. Vizsgáld meg a feszültségosztó bekötését (NTC és $10\text{ k}\Omega$-os ellenállás a `SEN` analóg lábra kötve: Panel: `PA1`, Nucleo: `PA3`)!
 4. Futtasd a kalibrációs programot, és hajtsd végre a zéruspontos kalibrációt: merítsd a termisztort 0 °C-os jégvíz keverékbe, majd a középső (BTN3) nyomógombbal az OLED utasításai szerint tárold el a korrekciós értéket!
 5. Figyeld meg az átlagolás (`SAMPLE_NUMBER`) hatását a mért értékek szórására és stabilitására!
 6. A labor végén töltsd fel a megoldásodat a saját privát GitHub repódba a heti érdemjegyedért:
